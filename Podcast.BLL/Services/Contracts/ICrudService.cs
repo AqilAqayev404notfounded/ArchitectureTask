@@ -19,7 +19,7 @@ public interface ICrudService<TEntity, TViewModel, TCreateViewModel, TUpdateView
      Task<IEnumerable<TViewModel>> GetListAsync(Expression<Func<TEntity, bool>>? predicate = null, 
                                       Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
                                       Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null);
-    Task<TViewModel> CreateAsync(TCreateViewModel createViewModel);
+    Task<TViewModel> CreateAsync(TCreateViewModel createViewModel, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState);
     Task<TViewModel> UpdateAsync(TUpdateViewModel entity);
     Task<TViewModel> RemoveAsync(int id);
 }

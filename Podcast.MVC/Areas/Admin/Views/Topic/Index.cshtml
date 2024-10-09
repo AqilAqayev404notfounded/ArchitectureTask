@@ -14,23 +14,35 @@
                                 <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Status report</th>
-                                        <th>Office</th>
-                                        <th>Gross amount</th>
+                                        <th>CoverUrl</th>
+                                        <th>images</th>
+                                        <th>Action</th> 
+
                                     </tr> 
                                 </thead>
                                 <tbody>
 
                                     @foreach (var item in Model)
                                     {
-
                                         <tr>
                                             <td>@item.Name</td>
                                             <td>@item.CoverUrl</td>
-                                            <td>@item.Episodes</td>
-                                            <td>$2274253</td>
+                                            <td>
+                                                <img src="~/images/topics/@item.CoverUrl" alt="Topic Image" style="width: 100px; height: auto;" />
+                                            </td>
+                                            <td>
+                                                <form asp-action="Delete" asp-controller="Topic" method="post">
+                                                    <input type="hidden" name="id" value="@item.Id" />
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </td> 
+                                            <td>
+                                                <form asp-action="Update" asp-controller="Topic" method="get">
+                                                    <input type="hidden" name="id" value="@item.Id" />
+                                                    <button type="submit" class="btn btn-danger">update</button>
+                                                </form>
+                                            </td> 
                                         </tr>
-
                                     }
                                 </tbody>
 

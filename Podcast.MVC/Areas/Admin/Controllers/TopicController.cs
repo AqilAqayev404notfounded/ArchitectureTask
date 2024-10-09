@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Podcast.BLL.Services.Contracts;
 using Podcast.BLL.ViewModels.TopicViewModels;
-using Podcast.DAL.DataContext;
-using Podcast.DAL.DataContext.Entities;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+
+
 
 namespace Podcast.MVC.Areas.Admin.Controllers
 {
@@ -12,16 +13,26 @@ namespace Podcast.MVC.Areas.Admin.Controllers
     public class TopicController : Controller
     {
         private readonly ITopicService _topicService;
+        private readonly string FOLDER_PATH;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public TopicController(ITopicService topicService)
+
+
+        public TopicController(ITopicService topicService, IWebHostEnvironment webHostEnvironment)
         {
+
             _topicService = topicService;
+            _webHostEnvironment = webHostEnvironment;
+            FOLDER_PATH = FOLDER_PATH = Path.Combine(_webHostEnvironment.WebRootPath, "images", "topics");
+
         }
 
         public async Task<IActionResult> Index()
         {
+
             var topic =await _topicService.GetListAsync();
             return View(topic);
+
         }
 
         public IActionResult Create()
@@ -32,53 +43,55 @@ namespace Podcast.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create( TopicCreateViewModel model)
         {
-            if (!ModelState.IsValid) 
-            {
-                return View(model);
-            }
+
+           
+            var succeeded = await _topicService.CreateAsync(model, ModelState, FOLDER_PATH);
 
 
-            await _topicService.CreateAsync(model);
-            return RedirectToAction("Index");
+            if (succeeded) return RedirectToAction("Index");
+            return View(model);
 
         }
 
-        public IActionResult UpdateAsync() 
+
+        public IActionResult Update() 
         { 
-            return View() ;
+
+            return View();
+
         }
+
 
         [HttpPost]
-        public async Task< IActionResult> UpdateAsync(TopicUpdateViewModel model)
+        public async Task< IActionResult> Update(int? id,TopicUpdateViewModel model)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            await _topicService.UpdateAsync(model);
+            var result = await _topicService.UpdateAsync(model, ModelState, FOLDER_PATH);
+            if (result == false) return View(model);
+            if (result == null) return BadRequest();
             return RedirectToAction("Index");
 
-
         }
+
         public IActionResult Delete() 
         {
+
             return View();
+
         }
+
         [HttpPost]
-        public async Task<IActionResult> Delete()
+        public async Task<IActionResult> Delete(int id)
         {
 
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
+            if (id == null) return NotFound();
+
+
+            var result = await _topicService.RemoveAsync(id);
+
+
+            return RedirectToAction("Index");
 
         }
-
-
-
 
     }
 }

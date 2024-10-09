@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore.Query;
 using Podcast.BLL.Services.Contracts;
 using Podcast.BLL.ViewModels;
@@ -83,5 +84,10 @@ public class CrudManager<TEntity, TViewModel, TCreateViewModel, TUpdateViewModel
         var viewModel = _mapper.Map<TViewModel>(deletedEntity);
 
         return viewModel;
+    }
+
+    public Task<TViewModel> CreateAsync(TCreateViewModel createViewModel, ModelStateDictionary modelState)
+    {
+        throw new NotImplementedException();
     }
 }
